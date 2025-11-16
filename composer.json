@@ -3,7 +3,7 @@
   "description": "\"Projeto final aplicando os principios SOLID\"",
   "autoload": {
     "psr-4": {
-      "src": "src/"
+      "App\\":"src/"
     }
   },
   "authors": [

@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Aluno\\ProjectFinalSolid\\' => array($baseDir . '/src'),
+    'App\\' => array($baseDir . '/src'),
 );
