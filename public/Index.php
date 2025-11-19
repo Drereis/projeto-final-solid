@@ -9,18 +9,18 @@ use App\Domain\Service\CarPricing;
 use App\Domain\Service\MotorcyclePricing;
 use App\Domain\Service\PricingService;
 use App\Domain\Service\TruckPricing;
-use App\Infra\SqliteParkingRecordRepository;
+use App\Infra\TxtParkingRecordRepository; 
 
 
 $errorMessage = null;
 $successMessage = null;
 
 
-$dbPath = __DIR__ . '/../storage/parking_records.db';
+$dbPath = __DIR__ . '/../storage/parking_records.txt';
 
 try {
 
-    $repository = new SqliteParkingRecordRepository($dbPath);
+    $repository = new TxtParkingRecordRepository($dbPath);
     $pricingStrategies = [
         new CarPricing(),
         new MotorcyclePricing(),
@@ -66,77 +66,72 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estacionamento SOLID</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; background-color: #f4f4f4; }
-        h1, h2, h3 { color: #333; }
-        hr { border: 1px solid #ddd; }
-        .container { display: flex; gap: 30px; }
-        .form-section, .report-section { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex: 1; }
-        form { display: flex; flex-direction: column; gap: 10px; }
-        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { background-color: #007bff; color: white; cursor: pointer; border: none; }
-        button:hover { background-color: #0056b3; }
-        .error { color: red; font-weight: bold; }
-        .success { color: green; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f9f9f9; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Controle de Estacionamento Inteligente (SOLID)</h1>
+<body class="bg-gray-100 p-5 max-w-4xl mx-auto font-sans leading-relaxed">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Controle de Estacionamento Inteligente (SOLID)</h1>
 
     <?php if ($successMessage): ?>
-        <p class="success"><?= htmlspecialchars($successMessage) ?></p>
+        <p class="text-green-600 font-bold mb-4"><?= htmlspecialchars($successMessage) ?></p>
     <?php endif; ?>
     <?php if ($errorMessage): ?>
-        <p class="error"><?= htmlspecialchars($errorMessage) ?></p>
+        <p class="text-red-600 font-bold mb-4"><?= htmlspecialchars($errorMessage) ?></p>
     <?php endif; ?>
 
-    <div class="container">
-        <div class="form-section">
-            <h2>Operações</h2>
+    <div class="flex flex-col md:flex-row gap-8">
+        <div class="bg-white p-5 rounded-lg shadow flex-1">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Operações</h2>
             
-            <h3>Check-in</h3>
-            <form action="index.php" method="POST">
+            <h3 class="text-lg font-medium text-gray-700 mb-3">Check-in</h3>
+            <form action="index.php" method="POST" class="flex flex-col gap-3">
                 <input type="hidden" name="action" value="check-in">
-                <label>Placa: <input type="text" name="plate" required></label>
+                <label class="flex flex-col gap-1">
+                    <span class="text-gray-700">Placa:</span>
+                    <input type="text" name="plate" required class="p-2.5 border border-gray-300 rounded">
+                </label>
                 
-                <label>Tipo: <input type="text" name="type" placeholder="carro, moto, caminhao" required></label>
+                <label class="flex flex-col gap-1">
+                    <span class="text-gray-700">Tipo:</span>
+                    <input type="text" name="type" placeholder="carro, moto, caminhao" required class="p-2.5 border border-gray-300 rounded">
+                </label>
                 
-                <button type="submit">Registrar Entrada</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer transition">Registrar Entrada</button>
             </form>
 
-            <hr>
+            <hr class="border-t border-gray-300 my-6">
 
-            <h3>Check-out</h3>
-            <form action="index.php" method="POST">
+            <h3 class="text-lg font-medium text-gray-700 mb-3">Check-out</h3>
+            <form action="index.php" method="POST" class="flex flex-col gap-3">
                 <input type="hidden" name="action" value="check-out">
-                <label>Placa: <input type="text" name="plate" required></label>
-                <button type="submit">Registrar Saída</button>
+                <label class="flex flex-col gap-1">
+                    <span class="text-gray-700">Placa:</span>
+                    <input type="text" name="plate" required class="p-2.5 border border-gray-300 rounded">
+                </label>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer transition">Registrar Saída</button>
             </form>
         </div>
 
-        <div class="report-section">
-            <h2>Relatório de Faturamento</h2>
+        <div class="bg-white p-5 rounded-lg shadow flex-1">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Relatório de Faturamento</h2>
+            <a href="report.php" class="inline-block px-5 py-2.5 bg-green-600 text-white rounded mb-4 hover:bg-green-700 transition">Ver Relatórios Completos →</a>
             <?php if (isset($report)): ?>
-                <h3>Total Faturado: R$ <?= number_format($report['totalFaturamento'], 2, ',', '.') ?></h3>
-                <p>Total de Veículos Processados: <?= $report['totalVeiculos'] ?></p>
+                <h3 class="text-lg font-medium text-gray-700 mb-2">Total Faturado: R$ <?= number_format($report['totalFaturamento'], 2, ',', '.') ?></h3>
+                <p class="text-gray-600 mb-4">Total de Veículos Processados: <?= $report['totalVeiculos'] ?></p>
 
-                <table>
+                <table class="w-full border-collapse mt-3">
                     <thead>
                         <tr>
-                            <th>Tipo de Veículo</th>
-                            <th>Veículos</th>
-                            <th>Faturamento</th>
+                            <th class="border border-gray-300 p-2 text-left bg-gray-50">Tipo de Veículo</th>
+                            <th class="border border-gray-300 p-2 text-left bg-gray-50">Veículos</th>
+                            <th class="border border-gray-300 p-2 text-left bg-gray-50">Faturamento</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($report['detalhesPorTipo'] as $tipo => $data): ?>
                         <tr>
-                            <td><?= ucfirst($tipo) ?></td>
-                            <td><?= $data['veiculos'] ?></td>
-                            <td>R$ <?= number_format($data['faturamento'], 2, ',', '.') ?></td>
+                            <td class="border border-gray-300 p-2"><?= ($tipo) ?></td>
+                            <td class="border border-gray-300 p-2"><?= $data['veiculos'] ?></td>
+                            <td class="border border-gray-300 p-2">R$ <?= number_format($data['faturamento']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
