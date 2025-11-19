@@ -9,16 +9,16 @@ use App\Domain\Service\CarPricing;
 use App\Domain\Service\MotorcyclePricing;
 use App\Domain\Service\PricingService;
 use App\Domain\Service\TruckPricing;
-use App\Infra\TxtParkingRecordRepository;
+use App\Infra\SqliteParkingRecordRepository;
 
 $errorMessage = null;
 $billingReport = null;
 $activeVehicles = [];
 
-$dbPath = __DIR__ . '/../storage/parking_records.txt';
+$dbPath = __DIR__ . '/../storage/parking_records.db';
 
 try {
-    $repository = new TxtParkingRecordRepository($dbPath);
+    $repository = new SqliteParkingRecordRepository($dbPath);
     $pricingStrategies = [
         new CarPricing(),
         new MotorcyclePricing(),
